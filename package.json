@@ -1,0 +1,15 @@
+{
+  "name": "sergey.zalubovskiy.room",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "webpack --config config/webpack/webpack.dev.config.js && webpack-dev-server --inline --port 8080 --config config/webpack/webpack.common.config.js",
+    "debug": "webpack --config config/webpack/webpack.dev.config.js",
+    "release": "webpack --config config/webpack/webpack.release.config.js"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.2",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2",
+    "run-sequence": "^1.2.2"
+  }
+}
