@@ -2,9 +2,8 @@
   "name": "sergey.zalubovskiy.room",
   "version": "1.0.0",
   "scripts": {
-    "dev": "webpack --config config/webpack/webpack.dev.config.js && webpack-dev-server --inline --port 8080 --config config/webpack/webpack.common.config.js",
-    "debug": "webpack --config config/webpack/webpack.dev.config.js",
-    "release": "webpack --config config/webpack/webpack.release.config.js"
+    "init": "npm install && gulp",
+    "gulp": "gulp"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",
@@ -15,6 +14,7 @@
     "gulp-cssnano": "^2.1.2",
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^2.0.0",
+    "gulp-wrap": "^0.13.0",
     "run-sequence": "^1.2.2"
   }
 }

@@ -7,12 +7,21 @@ import cssnano from 'gulp-cssnano';
 import concat from 'gulp-concat';
 import browserSync from 'browser-sync';
 import runSequence from 'run-sequence';
+import wrap from 'gulp-wrap';
 
-const buildDestination = 'build/',
+const layoutTask = 'layoutTask',
+      sassTask = 'sassTask',
+      jsTask = 'jsTask',
+      browserSyncTask = 'browserSyncTask',
+
+      buildDestination = 'build',
+
       sassPath = 'app/scss/**/*.scss',
-      jsPath = 'app/src/**/*.js';
+      jsPath = 'app/src/**/*.js',
+      htmlPath = 'app/**/*.html',
+      mainLayoutPath = 'app/layouts/layout.html';
 
-gulp.task('sass', function() {
+gulp.task(sassTask, function() {
     return gulp.src(sassPath)
                .pipe(sass().on('error', sass.logError))               
                .pipe(concat('base.min.css'))
@@ -23,7 +32,7 @@ gulp.task('sass', function() {
                 }))
 });
 
-gulp.task('js', function() {
+gulp.task(jsTask, function() {
     return gulp.src(jsPath)
                .pipe(concat('app.build.min.js'))
                .pipe(uglify())
@@ -33,24 +42,31 @@ gulp.task('js', function() {
                 }))
 });
 
-gulp.task('browserSync', function() {
+gulp.task(browserSyncTask, function() {
   browserSync.init({
     server: {
-      baseDir: 'app'
+      baseDir: 'build'
     },
   })
-})
+});
 
-gulp.task('watch', ['browserSync'], function (){
-  gulp.watch('app/scss/**/*.scss', ['sass']); 
-  // Other watchers
-  // Reloads the browser whenever HTML or JS files change
-  gulp.watch('app/*.html', browserSync.reload); 
-  gulp.watch('app/src/**/*.js', ['js']); 
+gulp.task(layoutTask, function () {
+  return gulp.src([ htmlPath, /*except*/'!' + mainLayoutPath ])
+    .pipe(wrap({ src: mainLayoutPath }))
+    .pipe(gulp.dest(buildDestination))
+    .pipe(browserSync.reload({
+            stream: true
+     }));
+});
+
+gulp.task('watch', [browserSyncTask], function (){
+  gulp.watch(sassPath, [sassTask]); 
+  gulp.watch(htmlPath, [layoutTask]); 
+  gulp.watch(jsPath, [jsTask]); 
 })
 
 gulp.task('default', function (callback) {
-  runSequence(['sass', 'js', 'browserSync', 'watch'],
+  runSequence([sassTask, jsTask, layoutTask, browserSyncTask, 'watch'],
     callback
   )
 });
